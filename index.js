@@ -42,8 +42,14 @@ const Product = mongoose.model("Product", productSchema);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Use cors middleware
-app.use(cors());
+// CORS configuration
+const corsOptions = {
+  origin: process.env.CLIENT_ORIGIN || 'http://localhost:3001', // Allow this origin, use env variable if needed
+  methods: 'GET,POST,PUT,DELETE', // Allowed methods
+  allowedHeaders: 'Content-Type,Authorization', // Allowed headers
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Add product endpoint
