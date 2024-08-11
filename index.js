@@ -1,12 +1,54 @@
-
 const express = require('express');
 const cors = require('cors');
-const mongoose = require('./config/db'); //  this is pointing to the updated db config
-const Product = require('./models/Product');
+const mongoose = require('mongoose');
 require('dotenv').config();
 
+// Define the schema for the Product model
+const productSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    brand: {
+      type: String,
+      required: true,
+    },
+    category: {
+      type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+    },
+    price: {
+      type: mongoose.Types.Decimal128, // Use Decimal128 for precise decimal values
+      required: true,
+    },
+    photos: {
+      type: [String], // Array of strings to store multiple photo URLs
+    },
+  },
+  {
+    timestamps: false, // No automatic timestamps
+    collection: "products", // Ensure the collection name matches the existing MySQL table
+  }
+);
+
+// Create and export the Product model
+const Product = mongoose.model("Product", productSchema);
+
+// Initialize Express app
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Connect to MongoDB
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => console.log('MongoDB connected'))
+.catch(err => console.error('MongoDB connection error:', err));
 
 // Use cors middleware
 app.use(cors());
@@ -66,6 +108,7 @@ app.put('/products/update/:id', async (req, res) => {
   }
 });
 
+// Start the server
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
