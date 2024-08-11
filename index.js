@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const mongoose = require('mongoose');
+const mongoose = require('./config/db'); // Import the database connection
 require('dotenv').config();
 
 // Define the schema for the Product model
@@ -41,14 +41,6 @@ const Product = mongoose.model("Product", productSchema);
 // Initialize Express app
 const app = express();
 const PORT = process.env.PORT || 3000;
-
-// Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => console.log('MongoDB connected'))
-.catch(err => console.error('MongoDB connection error:', err));
 
 // Use cors middleware
 app.use(cors());
